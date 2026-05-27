@@ -1,5 +1,7 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
+import { createSupabaseServerClient } from '@/lib/supabase/server'
+import { signOut } from '@/app/actions/auth'
 import './globals.css'
 
 export const metadata: Metadata = {
@@ -7,11 +9,19 @@ export const metadata: Metadata = {
   description: 'Connecting riders with businesses for fast, reliable last-mile delivery.',
 }
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode
 }) {
+  const supabase = await createSupabaseServerClient()
+  const {
+    data: { user },
+  } = await supabase.auth.getUser()
+
+  const role = user?.user_metadata?.role as 'rider' | 'business' | undefined
+  const dashboard = role === 'rider' ? '/rider' : role === 'business' ? '/business' : null
+
   return (
     <html lang="en">
       <body>
@@ -20,6 +30,7 @@ export default function RootLayout({
             <Link href="/" className="text-2xl font-black tracking-tight text-white">
               MC<span className="text-orange-500">RYDR</span>
             </Link>
+
             <div className="hidden items-center gap-8 md:flex">
               <Link href="/about" className="text-sm text-neutral-400 transition-colors hover:text-white">
                 About
@@ -30,16 +41,40 @@ export default function RootLayout({
               <Link href="/business" className="text-sm text-neutral-400 transition-colors hover:text-white">
                 For Business
               </Link>
-              <Link
-                href="/rider"
-                className="rounded-full bg-orange-500 px-5 py-2 text-sm font-semibold text-white transition-colors hover:bg-orange-600"
-              >
-                Get Started
-              </Link>
+
+              {user ? (
+                <div className="flex items-center gap-3">
+                  {dashboard && (
+                    <Link
+                      href={dashboard}
+                      className="rounded-full border border-orange-500/40 px-4 py-2 text-sm font-semibold text-orange-400 transition-colors hover:bg-orange-500/10"
+                    >
+                      Dashboard
+                    </Link>
+                  )}
+                  <form action={signOut}>
+                    <button
+                      type="submit"
+                      className="rounded-full border border-white/10 px-4 py-2 text-sm font-semibold text-neutral-400 transition-colors hover:border-white/20 hover:text-white"
+                    >
+                      Log Out
+                    </button>
+                  </form>
+                </div>
+              ) : (
+                <Link
+                  href="/auth"
+                  className="rounded-full bg-orange-500 px-5 py-2 text-sm font-semibold text-white transition-colors hover:bg-orange-600"
+                >
+                  Get Started
+                </Link>
+              )}
             </div>
           </nav>
         </header>
+
         <main>{children}</main>
+
         <footer className="border-t border-white/10 bg-[#0d0d0d] py-12">
           <div className="mx-auto max-w-7xl px-6">
             <div className="flex flex-col items-center justify-between gap-6 md:flex-row">

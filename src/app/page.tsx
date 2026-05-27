@@ -51,13 +51,13 @@ export default function LandingPage() {
             </p>
             <div className="flex flex-wrap gap-4">
               <Link
-                href="/rider"
+                href="/auth"
                 className="rounded-full bg-orange-500 px-8 py-3.5 text-base font-semibold text-white transition-colors hover:bg-orange-600"
               >
                 Become a Rider
               </Link>
               <Link
-                href="/business"
+                href="/auth"
                 className="rounded-full border border-white/20 px-8 py-3.5 text-base font-semibold text-white transition-colors hover:border-white/40 hover:bg-white/5"
               >
                 Partner with Us
@@ -134,13 +134,13 @@ export default function LandingPage() {
             </p>
             <div className="flex flex-wrap justify-center gap-4">
               <Link
-                href="/rider"
+                href="/auth"
                 className="rounded-full bg-orange-500 px-8 py-3.5 text-base font-semibold text-white transition-colors hover:bg-orange-600"
               >
                 Join as a Rider
               </Link>
               <Link
-                href="/business"
+                href="/auth"
                 className="rounded-full border border-white/20 px-8 py-3.5 text-base font-semibold text-white transition-colors hover:border-white/40 hover:bg-white/5"
               >
                 Business Account
