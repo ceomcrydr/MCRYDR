@@ -1,0 +1,2 @@
+Replace this file with founder.jpg — a real photo (JPEG/JPG) for the About page.
+The image is displayed at 256x256px in a square crop on the founder card.
