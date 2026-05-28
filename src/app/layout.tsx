@@ -14,10 +14,16 @@ export default async function RootLayout({
 }: {
   children: React.ReactNode
 }) {
-  const supabase = await createSupabaseServerClient()
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
+  let user = null
+  try {
+    if (process.env.NEXT_PUBLIC_SUPABASE_URL && process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
+      const supabase = await createSupabaseServerClient()
+      const { data } = await supabase.auth.getUser()
+      user = data.user
+    }
+  } catch {
+    // Supabase not configured — show logged-out nav
+  }
 
   const role = user?.user_metadata?.role as 'rider' | 'business' | undefined
   const dashboard = role === 'rider' ? '/rider' : role === 'business' ? '/business' : null

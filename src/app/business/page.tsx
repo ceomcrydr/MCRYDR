@@ -1,3 +1,5 @@
+import { redirect } from 'next/navigation'
+import { createSupabaseServerClient } from '@/lib/supabase/server'
 import Link from 'next/link'
 
 const metrics = [
@@ -30,7 +32,14 @@ const statusColors: Record<string, string> = {
   'Awaiting Pickup': 'text-neutral-400 bg-white/5',
 }
 
-export default function BusinessPage() {
+export default async function BusinessPage() {
+  try {
+    if (process.env.NEXT_PUBLIC_SUPABASE_URL && process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
+      const supabase = await createSupabaseServerClient()
+      const { data: { user } } = await supabase.auth.getUser()
+      if (!user) redirect('/auth')
+    }
+  } catch { /* allow access if Supabase not configured */ }
   return (
     <>
       {/* Hero */}
